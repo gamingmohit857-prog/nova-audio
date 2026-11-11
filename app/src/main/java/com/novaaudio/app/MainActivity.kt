@@ -3,28 +3,56 @@ package com.novaaudio.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.sp
+import com.novaaudio.app.ui.HomeScreen
+import com.novaaudio.app.ui.Nova
+import com.novaaudio.app.ui.NoiseScreen
+import com.novaaudio.app.ui.NovaTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Column(
-                modifier = Modifier.fillMaxSize().background(Color(0xFF0B0B0F)),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("NOVA AUDIO", color = Color(0xFF22D3EE), fontSize = 32.sp)
-                Text("Build test. No earbuds connected.", color = Color(0xFFA78BFA), fontSize = 14.sp)
+            NovaTheme { NovaApp() }
+        }
+    }
+}
+
+@Composable
+private fun NovaApp() {
+    var tab by rememberSaveable { mutableStateOf(0) }
+    Scaffold(
+        containerColor = Nova.Black,
+        bottomBar = {
+            NavigationBar(containerColor = Nova.Graphite) {
+                NavigationBarItem(
+                    selected = tab == 0,
+                    onClick = { tab = 0 },
+                    icon = { Text("◉") },
+                    label = { Text("Home") }
+                )
+                NavigationBarItem(
+                    selected = tab == 1,
+                    onClick = { tab = 1 },
+                    icon = { Text("◎") },
+                    label = { Text("Noise") }
+                )
             }
+        }
+    ) { padding ->
+        Box(modifier = Modifier.padding(padding)) {
+            if (tab == 0) HomeScreen() else NoiseScreen()
         }
     }
 }
